@@ -1,3 +1,4 @@
+{{- if not .Values.forge.flowforgeConfigSecret }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -167,3 +168,4 @@ data:
     rate_limits:
 {{ toYaml .Values.forge.rate_limits | indent 6 }}
     {{- end }}
+{{- end }}

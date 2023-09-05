@@ -73,8 +73,13 @@ spec:
       {{- end }}
       volumes:
       - name: config
+        {{ if .Values.forge.flowforgeConfigSecret }}
+        secret:
+          name: {{ .Values.forge.flowforgeConfigSecret }}
+        {{ else }}
         configMap:
           name: flowforge-config
+        {{- end }}
       {{- if .Values.forge.privateCA }}
       - name: cacert
         configMap:

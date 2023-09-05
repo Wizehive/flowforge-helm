@@ -1,4 +1,5 @@
 {{- if .Values.forge.fileStore.enabled -}}
+{{- if not .Values.forge.fileStore.fileStoreConfigSecret }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -26,6 +27,7 @@ data:
       options:
 {{ toYaml .Values.forge.fileStore.context.options | indent 8 -}}
     {{- end }}
+{{- end }}
 ---
 {{ if eq .Values.forge.fileStore.type "localfs" }}
 apiVersion: v1
@@ -85,8 +87,13 @@ spec:
       {{- end }}
       volumes:
       - name: config
-        configMap: 
+        {{ if .Values.forge.fileStore.fileStoreConfigSecret }}
+        secret:
+          name: {{ .Values.forge.fileStore.fileStoreConfigSecret }}
+        {{ else }}
+        configMap:
           name: flowforge-file-config
+        {{- end}}
       {{ if eq .Values.forge.fileStore.type "localfs" -}}
       - name: root
         persistentVolumeClaim:

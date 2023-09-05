@@ -4,6 +4,9 @@
         "forge": {
             "type": "object",
             "properties": {
+                "flowforgeConfigSecret": {
+                    "type": "string"
+                },
                 "entryPoint": {
                     "type": "string"
                 },
@@ -254,6 +257,9 @@
                         "type": {
                             "type": "string"
                         },
+                        "fileStoreConfigSecret": {
+                            "type": "string"
+                        },
                         "options": {
                             "type": "object"
                         }
@@ -322,23 +328,38 @@
                     }
                 }
             },
-            "required": [
-                "domain",
-                "dbUsername",
-                "dbPassword"
-            ],
-            "if": {
-                "properties": {
-                    "localPostgresql": {
-                        "enum": [ false ]
+            "oneof": [
+                {
+                    "if": {
+                        "properties": {
+                            "flowforgeConfigSecret": {
+                                "type": null
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "domain",
+                            "dbUsername",
+                            "dbPassword"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "localPostgresql": {
+                                "enum": [ false ]
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "postgres"
+                        ]
                     }
                 }
-            },
-            "then": {
-                "required": [
-                    "postgres"
-                ]
-            }
+            ]
         },
         "ingress": {
             "type": "object",
